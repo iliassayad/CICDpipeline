@@ -7,7 +7,7 @@ pipeline {
 	}
 
 	environment {
-		DOCKER_REGISTRY = "52.90.159.202:8082"    // port du repo Docker Nexus
+		DOCKER_REGISTRY = "52.90.159.202:8081"    // port du repo Docker Nexus
         IMAGE_NAME = "myapp"
     }
 
