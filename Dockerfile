@@ -28,5 +28,5 @@ COPY --from=builder /app/target/*.jar app.jar
 # Exposer le port de l’application Spring Boot
 EXPOSE 8080
 
-# Commande de démarrage
+# Commande de démarrage )
 ENTRYPOINT ["java", "-jar", "app.jar"]
