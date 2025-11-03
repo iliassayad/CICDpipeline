@@ -15,6 +15,7 @@ pipeline {
 			}
 			post {
 				success {
+					sh 'echo Build Successful'
 					archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                 }
 			}
