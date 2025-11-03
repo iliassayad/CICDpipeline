@@ -22,7 +22,7 @@ pipeline {
 		}
 		stage ('Test Docker'){
 			steps {
-				echo 'Testing Docker...'
+				echo 'Testing Docker....'
 				sh 'docker --version'
 			}
 		}
