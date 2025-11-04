@@ -45,5 +45,19 @@ pipeline {
              }
           }
        }
+       stage('Clean Up Local Docker Images') {
+			steps {
+				script {
+					sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} || true"
+			 }
+		  }
+	   }
+	   stage('run docker container') {
+			steps {
+				script {
+					sh "docker run -d -p 80:8080 ${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+			 	}
+			}
+	   }
     }
 }
