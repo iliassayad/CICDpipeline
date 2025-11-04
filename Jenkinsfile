@@ -7,9 +7,10 @@ pipeline {
     }
 
     environment {
-		DOCKER_REGISTRY = "52.90.159.202:8082"
-       REPO_NAME = "docker-img"              // Nom du repository Nexus
-       IMAGE_NAME = "myapp"
+		IMAGE_NAME = "myapp"
+		REGISTRY_CRDS = "nexusLog"  	 // ID des credentials Jenkins pour Nexus
+		DOCKER_REGISTRY = "172.31.35.115:8082"
+       	dockerImage = ''
     }
 
     stages {
@@ -30,8 +31,7 @@ pipeline {
        stage('Build docker image') {
 			steps {
 				script {
-					// Format: registry/repository/image:tag
-                dockerImage = docker.build("${DOCKER_REGISTRY}/${REPO_NAME}/${IMAGE_NAME}:${env.BUILD_ID}")
+					dockerImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}")
              }
           }
        }
@@ -39,9 +39,8 @@ pipeline {
        stage('Push docker image to Nexus') {
 			steps {
 				script {
-					docker.withRegistry("http://${DOCKER_REGISTRY}", "nexusLog") {
+					docker.withRegistry("http://${DOCKER_REGISTRY}", "${REGISTRY_CRDS}") {
 						dockerImage.push()
-                   dockerImage.push('latest')
                 }
              }
           }
