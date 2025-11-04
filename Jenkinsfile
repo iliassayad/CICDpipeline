@@ -48,7 +48,7 @@ pipeline {
        stage('Clean Up Local Docker Images') {
 			steps {
 				script {
-					sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} || true"
+					sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER - 1} || true"
 			 }
 		  }
 	   }
