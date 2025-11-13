@@ -2,6 +2,7 @@ package net.ayad.firstcicdpipeline.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@Builder
 @Schema(description = "Data Transfer Object for responding with Product details")
 public class ProductResponseDTO {
     @Schema(description = "Unique identifier of the product", example = "1")

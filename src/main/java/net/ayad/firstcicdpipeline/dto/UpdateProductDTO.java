@@ -2,12 +2,14 @@ package net.ayad.firstcicdpipeline.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
+@Builder
 @Schema(description = "Data Transfer Object for updating an existing Product")
 public class UpdateProductDTO {
     @Schema(description = "Name of the product", example = "Laptop")
