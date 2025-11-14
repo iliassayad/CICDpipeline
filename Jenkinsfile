@@ -45,7 +45,7 @@ pipeline {
 					-Dsonar.projectVersion=1.0 \
 					-Dsonar.java.binaries=target/classes \
 					-Dsonar.junit.reportPaths=target/surefire-reports \
-					-Dsonar.jacoco.reportPaths=target/jacoco.exec \
+					-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
 					-Dsonar.sources=src \
 					'''
 				}
