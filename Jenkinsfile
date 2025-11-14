@@ -6,58 +6,50 @@ pipeline {
        maven 'MAVEN3.9'
     }
 
-    environment {
-		IMAGE_NAME = "myapp"
-		REGISTRY_CRDS = "nexusLog"  	 // ID des credentials Jenkins pour Nexus
-		DOCKER_REGISTRY = "172.31.35.115:8082"
-       	dockerImage = ''
-    }
-
-    stages {
-
+   stages {
+		stage('Checkout') {
+			steps {
+				checkout scm
+			}
+		}
 		stage('Build') {
 			steps {
-				echo 'Building...'
-             sh 'mvn clean install'
-          }
-          post {
-				success {
-					sh 'echo Build Successful'
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-             }
-          }
-       }
-
-       stage('Build docker image') {
-			steps {
-				script {
-					dockerImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}")
-             }
-          }
-       }
-
-       stage('Push docker image to Nexus') {
-			steps {
-				script {
-					docker.withRegistry("http://${DOCKER_REGISTRY}", "${REGISTRY_CRDS}") {
-						dockerImage.push()
-                }
-             }
-          }
-       }
-       stage('Clean Up Local Docker Images') {
-			steps {
-				script {
-					sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER - 1} || true"
-			 }
-		  }
-	   }
-	   stage('run docker container') {
-			steps {
-				script {
-					sh "docker run -d -p 80:8080 ${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
-			 	}
+				sh 'mvn clean install -DskipTests'
 			}
-	   }
-    }
+			post {
+				success {
+					echo 'Build completed successfully.'
+					 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+				}
+				failure {
+					echo 'Build failed. Please check the logs.'
+				}
+			}
+		}
+		stage('Test') {
+			steps {
+				sh 'mvn test'
+			}
+		}
+		stage('sonarQube Analysis') {
+			environment {
+				scannerHome = tool 'sonar6.2'
+			}
+
+			steps {
+				withSonarQubeEnv('sonarserver') {
+					sh '''
+					${scannerHome}/bin/sonar-scanner \
+					-Dsonar.projectKey=unitTesting \
+					-Dsonar.projectName=unitTesting \
+					-Dsonar.projectVersion=1.0 \
+					-Dsonar.java.binaries=target/classes \
+					-Dsonar.junit.reportPaths=target/surefire-reports \
+					-Dsonar.jacoco.reportPaths=target/jacoco.exec \
+					-Dsonar.sources=src \
+					'''
+				}
+			}
+		}
+	}
 }
