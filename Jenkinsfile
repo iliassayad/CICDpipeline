@@ -32,21 +32,12 @@ pipeline {
 			}
 		}
 		stage('sonarQube Analysis') {
-			environment {
-				scannerHome = tool 'sonar6.2'
-			}
-
 			steps {
 				withSonarQubeEnv('sonarserver') {
 					sh '''
-					${scannerHome}/bin/sonar-scanner \
-					-Dsonar.projectKey=unitTesting \
-					-Dsonar.projectName=unitTesting \
-					-Dsonar.projectVersion=1.0 \
-					-Dsonar.java.binaries=target/classes \
-					-Dsonar.junit.reportPaths=target/surefire-reports \
-					-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-					-Dsonar.sources=src \
+						mvn sonar:sonar \
+						-Dsonar.projectKey=unitTesting \
+						-Dsonar.projectName=unitTesting
 					'''
 				}
 			}
